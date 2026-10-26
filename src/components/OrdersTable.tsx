@@ -61,7 +61,7 @@ export function OrdersTable({ orders, sort, order, onSort }: Props) {
     <table className="orders">
       <thead>
         <tr>
-          <SortHeader label="Order no." field="SalesId" {...h} />
+          <th scope="col">Order no.</th>
           <th scope="col">Customer</th>
           <SortHeader label="Branch" field="InventSiteId" {...h} />
           <SortHeader label="Order date" field="CreatedDateTime1" {...h} />

@@ -8,7 +8,7 @@ interface Props {
 export function Dashboard({ summary }: Props) {
   const s = summary
   const cards = [
-    { label: 'Total orders', value: s && formatInt(s.total_orders), tone: 'neutral' },
+    { label: 'Total orders', value: s && formatInt(s.total_orders), tone: 'total' },
     { label: 'Open / pending', value: s && formatInt(s.open_orders), tone: 'open' },
     {
       label: 'Completed',
@@ -17,14 +17,14 @@ export function Dashboard({ summary }: Props) {
       tone: 'done',
     },
     { label: 'Cancelled', value: s && formatInt(s.cancelled_orders), tone: 'cancelled' },
-    { label: 'Total order value', value: s && formatCurrency(s.total_order_value), tone: 'neutral', wide: true },
+    { label: 'Total order value', value: s && formatCurrency(s.total_order_value), tone: 'total', wide: true },
   ]
 
   return (
     <section aria-labelledby="dash-title">
       <div className="section-head">
         <h2 id="dash-title">Overview</h2>
-        <p className="muted">All orders — these totals don’t change with the filters below.</p>
+        <p className="muted">— All orders —</p>
       </div>
       <div className="cards">
         {cards.map((c) => (

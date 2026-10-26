@@ -10,6 +10,8 @@
 
   --open-bg: #fff1d6;
   --open-fg: #8a5300;
+  --total-bg: #e1ebfd;
+  --total-fg: #1a47b8;
   --done-bg: #dcf5e6;
   --done-fg: #11663a;
   --cancelled-bg: #fde3e3;
@@ -35,6 +37,8 @@
 
     --open-bg: #3a2c0e;
     --open-fg: #ffcf7a;
+    --total-bg: #172a4d;
+    --total-fg: #9dbcff;
     --done-bg: #123325;
     --done-fg: #7fdcaa;
     --cancelled-bg: #3b1818;
@@ -107,8 +111,7 @@ p {
 }
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-left-width: 4px;
+  border: 1px solid transparent;
   border-radius: 10px;
   padding: 12px 14px;
   min-width: 0;
@@ -116,7 +119,8 @@ p {
 .card h3 {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--muted);
+  color: inherit;
+  opacity: 0.8;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -129,19 +133,18 @@ p {
 }
 .card-note {
   font-size: 0.8rem;
-  color: var(--muted);
+  color: inherit;
+  opacity: 0.8;
 }
-.card.tone-open {
-  border-left-color: var(--open-fg);
-}
-.card.tone-done {
-  border-left-color: var(--done-fg);
-}
-.card.tone-cancelled {
-  border-left-color: var(--cancelled-fg);
-}
-.card.tone-neutral {
-  border-left-color: var(--accent);
+.card.tone-open      { background: var(--open-bg);      color: var(--open-fg); }
+.card.tone-done      { background: var(--done-bg);      color: var(--done-fg); }
+.card.tone-cancelled { background: var(--cancelled-bg);  color: var(--cancelled-fg); }
+.card.tone-neutral   { background: var(--neutral-bg);    color: var(--neutral-fg); }
+.card.tone-total     { background: var(--total-bg);      color: var(--total-fg); }
+
+/* a faint outline in the card's own colour so it doesn't look flat */
+.card[class*="tone-"] {
+  border-color: color-mix(in srgb, currentColor 18%, transparent);
 }
 
 /* ---------- Filters ---------- */
