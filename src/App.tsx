@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { Dashboard } from './components/Dashboard'
 import { FilterBar } from './components/FilterBar'
 import { updateFilters, useFilters, useMeta, useOrders } from './hooks'
 import { formatCurrency, formatDate, formatInt } from './format'
@@ -19,6 +20,8 @@ export default function App() {
   return (
     <div className="app">
       <h1>Sales Order Monitor</h1>
+
+      <Dashboard summary={data?.summary} />
 
       <FilterBar
         filters={filters}
