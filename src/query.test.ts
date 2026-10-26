@@ -7,7 +7,9 @@ describe('parseFilters', () => {
   })
 
   it('reads every parameter', () => {
-    const f = parseFilters('?q=Siti&status=Open+order&site=B20&page=3&sort=HAR_TotalSOAmount&order=asc')
+    const f = parseFilters(
+      '?q=Siti&status=Open+order&site=B20&page=3&sort=HAR_TotalSOAmount&order=asc',
+    )
     expect(f).toEqual({
       q: 'Siti',
       status: 'Open order',
@@ -32,6 +34,7 @@ describe('parseFilters', () => {
   it('trims the search text', () => {
     expect(parseFilters('?q=%20%20Siti%20').q).toBe('Siti')
   })
+
 })
 
 describe('toUrlParams', () => {
@@ -40,7 +43,13 @@ describe('toUrlParams', () => {
   })
 
   it('round-trips through parseFilters', () => {
-    const f = { ...DEFAULT_FILTERS, q: 'Siti', status: 'Open order', site: 'B20', page: 2 }
+    const f = {
+      ...DEFAULT_FILTERS,
+      q: 'Siti',
+      status: 'Open order',
+      site: 'B20',
+      page: 2,
+    }
     expect(parseFilters(toUrlParams(f).toString())).toEqual(f)
   })
 })
@@ -61,11 +70,16 @@ describe('toApiParams', () => {
     expect(p.has('site')).toBe(false)
     expect(p.has('q')).toBe(false)
   })
+
 })
 
 describe('hasActiveFilters', () => {
-  it('ignores page and sort', () => {
-    expect(hasActiveFilters({ ...DEFAULT_FILTERS, page: 5, order: 'asc' })).toBe(false)
+  it('ignores page changes', () => {
+    expect(hasActiveFilters({ ...DEFAULT_FILTERS, page: 5 })).toBe(false)
+  })
+  it('treats non-default sorting as an active table filter', () => {
+    expect(hasActiveFilters({ ...DEFAULT_FILTERS, sort: 'HAR_TotalSOAmount' })).toBe(true)
+    expect(hasActiveFilters({ ...DEFAULT_FILTERS, order: 'asc' })).toBe(true)
   })
   it('is true when search, status or site is set', () => {
     expect(hasActiveFilters({ ...DEFAULT_FILTERS, q: 'x' })).toBe(true)

@@ -27,7 +27,6 @@ export function parseFilters(search: string): Filters {
     const page = Number.parseInt(p.get('page') ?? '', 10)
     const sort = p.get('sort') as SortKey | null
     const order = p.get('order')
-    
     return {
         q: (p.get('q') ?? '').trim(),
         status: p.get('status') ?? '',
@@ -67,5 +66,11 @@ export function toApiParams(f: Filters): URLSearchParams {
 }
 
 export function hasActiveFilters(f: Filters): boolean {
-    return Boolean(f.q || f.status || f.site)
+    return Boolean(
+        f.q ||
+        f.status ||
+        f.site ||
+        f.sort !== DEFAULT_FILTERS.sort ||
+        f.order !== DEFAULT_FILTERS.order
+    )
 }
