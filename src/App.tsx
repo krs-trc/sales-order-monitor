@@ -8,15 +8,6 @@ import { formatInt } from './format'
 import { hasActiveFilters } from './query'
 import type { SortKey, SortOrder } from './types'
 
-// Numeric columns read most naturally biggest/newest first; text columns A → Z.
-const FIRST_ORDER: Record<SortKey, SortOrder> = {
-  CreatedDateTime1: 'desc',
-  HAR_TotalSOAmount: 'desc',
-  SalesId: 'asc',
-  SalesStatus: 'asc',
-  InventSiteId: 'asc',
-}
-
 export default function App() {
   const filters = useFilters()
   const { data, loading, error, retry } = useOrders(filters)
@@ -30,15 +21,18 @@ export default function App() {
     (sort: SortKey, order: SortOrder) => updateFilters({ sort, order }),
     [],
   )
-  const onClear = useCallback(() => updateFilters({ q: '', status: '', site: '' }), [])
+  const onClear = useCallback(
+    () =>
+      updateFilters({
+        q: '',
+        status: '',
+        site: '',
+        sort: 'CreatedDateTime1',
+        order: 'desc',
+      }),
+    [],
+  )
   const onPage = useCallback((page: number) => updateFilters({ page }), [])
-
-  const onHeaderSort = (sort: SortKey) =>
-    updateFilters(
-      filters.sort === sort
-        ? { sort, order: filters.order === 'asc' ? 'desc' : 'asc' } // same column: flip
-        : { sort, order: FIRST_ORDER[sort] },
-    )
 
   const rows = data?.data ?? []
   const noMatches = !!data && !error && data.total === 0
@@ -56,21 +50,26 @@ export default function App() {
 
         <FilterBar
           filters={filters}
-          meta={meta}
           metaFailed={metaFailed}
           onSearch={onSearch}
-          onStatus={onStatus}
-          onSite={onSite}
-          onSort={onSortSelect}
-          onClear={onClear}
         />
 
         <section aria-label="Orders" aria-busy={loading}>
-          <p className="result-count" aria-live="polite">
-            {data && !error
-              ? `Showing ${formatInt(data.total)} of ${formatInt(data.summary.total_orders)} orders`
-              : ' '}
-          </p>
+          <div className="result-toolbar">
+            <p className="result-count" aria-live="polite">
+              {data && !error
+                ? `Showing ${formatInt(data.total)} of ${formatInt(data.summary.total_orders)} orders`
+                : ' '}
+            </p>
+            <button
+              type="button"
+              className="btn"
+              onClick={onClear}
+              disabled={!hasActiveFilters(filters)}
+            >
+              Clear filters
+            </button>
+          </div>
 
           {error ? (
             <div className="state state-error" role="alert">
@@ -86,11 +85,6 @@ export default function App() {
             <div className="state">
               <h2>No orders found</h2>
               <p>Nothing matches your search and filters.</p>
-              {hasActiveFilters(filters) && (
-                <button type="button" className="btn btn-primary" onClick={onClear}>
-                  Clear filters
-                </button>
-              )}
             </div>
           ) : pageOutOfRange ? (
             <div className="state">
@@ -106,7 +100,13 @@ export default function App() {
                 orders={rows}
                 sort={filters.sort}
                 order={filters.order}
-                onSort={onHeaderSort}
+                status={filters.status}
+                site={filters.site}
+                statusFacets={meta?.facets.statuses ?? []}
+                siteFacets={meta?.facets.sites ?? []}
+                onSort={onSortSelect}
+                onStatus={onStatus}
+                onSite={onSite}
               />
             </div>
           )}
