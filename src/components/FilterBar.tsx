@@ -32,7 +32,7 @@ function SearchBox({ value, onCommit }: { value: string; onCommit: (q: string) =
         type="search"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Order no., customer, salesperson"
+        placeholder="Search by order number or customer"
         autoComplete="off"
       />
     </label>
